@@ -604,8 +604,8 @@ services:
       HTTPS_PROXY: ${SANDBOX_HTTPS_PROXY:-http://ssrf_proxy:3128}
       SANDBOX_PORT: ${SANDBOX_PORT:-8194}
     volumes:
-      - ${VOLUMES_ROOTS}/dify/sandbox/dependencies:/dependencies
-      - ${VOLUMES_ROOTS}/dify/sandbox/conf:/conf
+      - ./volumes/sandbox/dependencies:/dependencies
+      - ./volumes/sandbox/conf:/conf
     healthcheck:
       test: [ 'CMD', 'curl', '-f', 'http://localhost:8194/health' ]
     networks:
@@ -879,7 +879,7 @@ services:
     volumes:
       - ${VOLUMES_ROOTS}/dify/oceanbase/data:/root/ob
       - ${VOLUMES_ROOTS}/dify/oceanbase/conf:/root/.obd/cluster
-      - ${VOLUMES_ROOTS}/dify/oceanbase/init.d:/root/boot/init.d
+      - ./volumes/oceanbase/init.d:/root/boot/init.d
     environment:
       OB_MEMORY_LIMIT: ${OCEANBASE_MEMORY_LIMIT:-6G}
       OB_SYS_PASSWORD: ${OCEANBASE_VECTOR_PASSWORD:-difyai123456}
@@ -1003,7 +1003,7 @@ services:
     environment:
       OPENSEARCH_HOSTS: '["https://opensearch:9200"]'
     volumes:
-      - ${VOLUMES_ROOTS}/dify/opensearch/opensearch_dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml
+      - ./volumes/opensearch/opensearch_dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml
     networks:
       - opensearch-net
     depends_on:
@@ -1042,7 +1042,7 @@ services:
     volumes:
       - ${VOLUMES_ROOTS}/dify/myscale/data:/var/lib/clickhouse
       - ${VOLUMES_ROOTS}/dify/myscale/log:/var/log/clickhouse-server
-      - ${VOLUMES_ROOTS}/dify/myscale/config/users.d/custom_users_config.xml:/etc/clickhouse-server/users.d/custom_users_config.xml
+      - ./volumes/myscale/config/users.d/custom_users_config.xml:/etc/clickhouse-server/users.d/custom_users_config.xml
     ports:
       - ${MYSCALE_PORT:-8123}:${MYSCALE_PORT:-8123}
 
