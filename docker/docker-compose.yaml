@@ -937,6 +937,9 @@ services:
     volumes:
       - ${VOLUMES_ROOTS}/dify/milvus/minio:/minio_data
     command: minio server /minio_data --console-address ":9001"
+    ports:
+      - 9010:9000
+      - 9011:9001
     healthcheck:
       test: [ 'CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live' ]
       interval: 30s
