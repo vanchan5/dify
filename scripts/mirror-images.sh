@@ -12,8 +12,10 @@
 #
 # Environment overrides:
 #   TARGET_REGISTRY   default: registry.cn-shenzhen.aliyuncs.com/vanchans_arm
-#   PLATFORM          default: linux/arm64  (namespace name implies arm)
 #   COMPOSE_FILE      default: <repo>/docker/docker-compose.yaml
+#
+# `docker pull` is called without --platform, so the host's default architecture
+# is used (run this script on an arm64 host to mirror arm64 images).
 #
 # Requires: docker, and `docker login` already done for TARGET_REGISTRY.
 
@@ -23,7 +25,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 TARGET_REGISTRY="${TARGET_REGISTRY:-registry.cn-shenzhen.aliyuncs.com/vanchans_arm}"
-PLATFORM="${PLATFORM:-linux/arm64}"
 COMPOSE_FILE="${COMPOSE_FILE:-${REPO_ROOT}/docker/docker-compose.yaml}"
 
 DRY_RUN=0
@@ -96,7 +97,6 @@ run() {
 
 # --- main loop ---------------------------------------------------------------
 echo "==> target registry : ${TARGET_REGISTRY}"
-echo "==> platform        : ${PLATFORM}"
 echo "==> compose file    : ${COMPOSE_FILE}"
 echo "==> images (${#IMAGES[@]}):"
 for img in "${IMAGES[@]}"; do echo "    - ${img}"; done
@@ -106,7 +106,7 @@ failed=()
 for src in "${IMAGES[@]}"; do
     dst="$(target_ref "${src}")"
     echo "==> ${src}  ->  ${dst}"
-    if ! run docker pull --platform "${PLATFORM}" "${src}"; then
+    if ! run docker pull "${src}"; then
         failed+=("${src} (pull)"); continue
     fi
     if ! run docker tag "${src}" "${dst}"; then
