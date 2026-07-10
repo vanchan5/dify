@@ -444,7 +444,8 @@ services:
       interval: 1s
       timeout: 3s
       retries: 60
-
+    security_opt:
+      - seccomp:unconfined
   # The mysql database.
   db_mysql:
     image: mysql:8.0
